@@ -24,10 +24,11 @@ module.exports.searchAndtransm = async function() {
                                 user.update({trans_tag: 'E'});
                                 childTable.push(user.dataValues);
                             }
-                            tableInfo = {tableName: tableName, tableData: _.cloneDeep(childTable)};
+                            tableInfo = {tableName: tableName, tableData: childTable};
                             makereq.highrankPush(tableInfo);
                         }
                     });
+                    //winston.info(9999999+JSON.stringify(tableInfo));
                     winston.info("********************************************************************************");
                     winston.info("*******************query end *************************");
                 });

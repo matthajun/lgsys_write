@@ -7,7 +7,7 @@ module.exports = class KDN_LGSYS_L001_RESULT extends Sequelize.Model {
                 type: Sequelize.STRING(10),
                 allowNull: true,
             },
-            res_code: {
+            res_cd: {
                 type: Sequelize.STRING(20),
                 allowNull: true,
             },

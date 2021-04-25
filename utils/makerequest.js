@@ -14,6 +14,7 @@ module.exports.highrankPush = async function(value) {
 
         if (err instanceof Error) {
             throw new Error(err);
+            winston.error(err);
         }
     });
 };

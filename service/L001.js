@@ -9,36 +9,48 @@ let tableName = "";
 let masterTableName = "";
 
 module.exports.parseAndInsert = async function(req, connect){
-    masterTableName =  tablePrefix + req.body.header.message_id;
+    //console.log(1111111, req);
+    masterTableName =  tablePrefix + req.header.message_id;
     const time = setDateTime.setDateTime();
-    const reqBodyData = {...req.body.body, ...req.body.header};
+    const reqBodyData = {...req.body, ...req.header};
     const tableInfos = [];
 
-    for (const [key,value] of Object.entries(reqBodyData)){
-        switch(key) {
-            case 'result' :
-                tableName= `${masterTableName}_${key}`;
-                let childTableInfos = [];
+    if(req.body.list !== null) {
+        for (const [key, value] of Object.entries(reqBodyData)) {
+            switch (key) {
+                case 'result' :
+                    tableName = `${masterTableName}_${key}`;
+                    let childTableInfos = [];
 
-                if(connect === 1) {
-                    childTableInfos.push({...req.body.header,...value, date_time: time});
-                    tableInfos.push({tableName, tableData: childTableInfos});
-                }
-                break;
+                    if (connect === 1) {
+                        childTableInfos.push({...req.header, ...value, date_time: time});
+                        tableInfos.push({tableName, tableData: childTableInfos});
+                    }
+                    break;
 
-            case 'list':
-                tableName= `${masterTableName}`;
-                let childTableInfos2 = [];
+                case 'list':
+                    tableName = `${masterTableName}`;
+                    let childTableInfos2 = [];
 
-                for (let rowData of value) {
-                    childTableInfos2.push({
-                        ...rowData, ...req.body.header, ...req.body.body, date_time: time
-                    });
-                }
+                    for (let rowData of value) {
+                        childTableInfos2.push({
+                            ...rowData, ...req.header, ...req.body, date_time: time
+                        });
+                    }
 
-                tableInfos.push({tableName, tableData: childTableInfos2});
-                break;
+                    tableInfos.push({tableName, tableData: childTableInfos2});
+                    break;
+            }
         }
+    }
+    else{
+        tableName = `${masterTableName}_${key}`; //값이 안맞아서 아래값으로 임시 테스트중(0422);
+        //console.log(1111111,tableName);
+        let childTableInfos = [];
+
+        childTableInfos.push({...req.header, ...req.body.result, date_time: time});
+        tableInfos.push({tableName, tableData: childTableInfos});
+
     }
 
     let rtnResult = {};

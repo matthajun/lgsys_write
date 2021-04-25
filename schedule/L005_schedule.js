@@ -8,37 +8,31 @@ let result = {};
 let result_for = {};
 
 exports.scheduleInsert = () => {
-    schedule.scheduleJob('3 */5 * * * *', function() {
+    schedule.scheduleJob('*/5 * * * *', function() {
         let value = makejson.makeReqData_L001('L005', 1);
-        let options = {
-            uri: process.env.LOG_ADDRESS,
-            method: 'POST',
-            body: value,
-            json: true
-        };
+        httpcall.Call('get', process.env.L005_ADDRESS, value,  async function (err, res) {
 
-        httpcall.httpReq(options, async function (err, res) {
             result = await L005.parseAndInsert(res);
             CH_L005.parseAndInsert(res);
-            let k = res.body.body.result.total_page;
 
-            for(let index = 2; index <= k; index++){
-                //console.log(index);
-                let value_for = makejson.makeReqData_L001('L005', index);
-                let options_for = {
-                    uri: process.env.LOG_ADDRESS,
-                    method: 'POST',
-                    body: value_for,
-                    json: true
-                };
-                httpcall.httpReq(options_for, async function (err, res) {
-                    result_for = await L005.parseAndInsert(res);
-                    CH_L005.parseAndInsert(res);
+            if(res.body.result !== null) {
+                let k = res.body.result.total_page;
+                if(k !== null) {
 
-                    if (result_for instanceof Error) {
-                        throw new Error(result_for);
+                    for (let index = 2; index <= k; index++) {
+                        //console.log(index);
+                        let value_for = makejson.makeReqData_L001('L005', index);
+
+                        httpcall.Call('get', process.env.L005_ADDRESS, value_for, async function (err, res) {
+                            result_for = await L005.parseAndInsert(res);
+                            CH_L005.parseAndInsert(res);
+
+                            if (result_for instanceof Error) {
+                                throw new Error(result_for);
+                            }
+                        })
                     }
-                })
+                }
             }
 
             if (result instanceof Error) {

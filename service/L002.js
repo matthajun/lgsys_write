@@ -9,9 +9,10 @@ let tableName = "";
 let masterTableName = "";
 
 module.exports.parseAndInsert = async function(req){
-    masterTableName =  tablePrefix + req.body.header.message_id;
+    winston.info(222222222222+req);
+    masterTableName =  tablePrefix + req.header.message_id;
     const time = setDateTime.setDateTime();
-    const reqBodyData = {...req.body.body, ...req.body.header};
+    const reqBodyData = {...req.body, ...req.header};
     const tableInfos = [];
 
     for (const [key,value] of Object.entries(reqBodyData)){
@@ -39,7 +40,7 @@ module.exports.parseAndInsert = async function(req){
                             }
                         }
 
-                        childTableInfos.push({...v, desc:k, ...rowData, ...req.body.header, ...req.body.body.result, ...req.body.body, date_time: time});
+                        childTableInfos.push({...v, desc:k, ...rowData, ...req.header, ...req.body.result, ...req.body, date_time: time});
                     }
                 }
                 tableInfos.push({tableName ,tableData:childTableInfos});

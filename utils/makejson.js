@@ -118,8 +118,9 @@ module.exports.makeReqData_L001 = function (id, page){
 
     const time = setDateTime.setDateTime();
     const before_time = String(Number(time) - 500);
+    const long_before_time = String(Number(time) - 1000);
     const reqHeaderData = {"message_id": id, "logger_id": ''};
-    const reqBody = {"loged_start_time": before_time, "loged_end_time": time, 'page': page};
+    const reqBody = {"loged_start_time": long_before_time, "loged_end_time": before_time, 'page': page};
 
     reqData.header = reqHeaderData;
     reqData.body = reqBody;
@@ -131,7 +132,7 @@ module.exports.makeReqData_L002 = function (id){
     let format_array = [];
 
     const reqHeaderData = {"message_id": id, "logger_id": ''};
-    const reqBody = {"format_array": format_array};
+    const reqBody = {"format_array": format_array };
 
     reqData.header = reqHeaderData;
     reqData.body = reqBody;
