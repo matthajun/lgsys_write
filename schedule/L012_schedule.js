@@ -4,7 +4,6 @@ const L005 = require('../service/L005');
 const makejson = require('../utils/makejson');
 const winston = require('../config/winston')(module);
 const confirmutils = require('../utils/confirmutils');
-const retry = require('../utils/retry');
 
 let result = {};
 let result_for = {};
