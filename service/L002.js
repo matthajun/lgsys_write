@@ -9,11 +9,10 @@ let tableName = "";
 let masterTableName = "";
 
 module.exports.parseAndInsert = async function(req){
-    winston.info(222222222222+req);
     masterTableName =  tablePrefix + req.header.message_id;
     const time = setDateTime.setDateTime();
     const reqBodyData = {...req.body, ...req.header};
-    const tableInfos = [];
+    let tableInfos = [];
 
     for (const [key,value] of Object.entries(reqBodyData)){
         if(Array.isArray(value)){

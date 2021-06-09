@@ -12,7 +12,7 @@ module.exports = class KDN_LGSYS_L007 extends Sequelize.Model {
                 type: Sequelize.STRING(10),
                 allowNull: true,
             },
-            normalSeq: {
+            normal_seq: {
                 type: Sequelize.STRING(50),
                 allowNull: true,
             },

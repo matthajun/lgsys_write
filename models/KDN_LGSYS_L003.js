@@ -29,10 +29,6 @@ module.exports = class KDN_LGSYS_L003 extends Sequelize.Model {
                 type: Sequelize.STRING(50),
                 allowNull: true,
             },
-            device_type: {
-                type: Sequelize.STRING(20),
-                allowNull: true,
-            },
             ip_address: {
                 type: Sequelize.STRING(20),
                 allowNull: true,

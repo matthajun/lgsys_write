@@ -9,10 +9,7 @@ const bodyParser = require('body-parser');
 const makejson = require('./utils/makejson');
 const winston = require('./config/winston')(module);
 dotenv.config();
-const v1 = require('./routes/v1');
 const api = require('./routes/api');
-const authRouter = require('./routes/auth');
-const indexRouter = require('./routes');
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
 
@@ -23,12 +20,22 @@ app.set('port', process.env.PORT || 8002);
 const L001 = require('./schedule/L001_schedule');
 const L002 = require('./schedule/L002_req');
 const L003 = require('./schedule/L003_schedule');
+const L004 = require('./schedule/L004_schedule');
 const L005 = require('./schedule/L005_schedule');
+const L006 = require('./schedule/L006_schedule');
+const L007 = require('./schedule/L007_schedule');
+const L008 = require('./schedule/L008_schedule');
+
+const L010 = require('./schedule/L010_schedule');
+
+const L012 = require('./schedule/L012_schedule');
+const L013 = require('./schedule/L013_schedule');
 
 const HighRank = require('./service/HighRank');
 
 const stix_log = require('./STIX_service/stixInsert_logevent');
-
+const http = require('http');
+const https = require('https');
 
 //app.set('view engine', 'html');
 
@@ -39,6 +46,19 @@ sequelize.sync({ force: false })
     .catch((err) => {
         winston.error(err.stack);
     });
+
+var protocol = 'https';
+
+if (protocol === 'https') {
+    var sslConfig = require('./config/ssl-config');
+    var options = {
+        key: sslConfig.privateKey,
+        cert: sslConfig.certificate
+    };
+    server = https.createServer(options, app).listen(process.env.SSL_PORT);
+} else {
+    server = http.createServer(app);
+}
 
 app.use(morgan( process.env.NODE_ENV !== 'production'?'dev':'combined',{stream:winston.httpLogStream}));
 
@@ -69,10 +89,7 @@ app.use(function (req, res, next) { // 1
     next();
 });
 
-app.use('/v1', v1);
 app.use('/api', api);
-app.use('/auth', authRouter);
-app.use('/', indexRouter);
 
 app.use((req, res, next) => {
     const error =  new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
@@ -95,9 +112,18 @@ app.listen(app.get('port'), () => {
 });
 
 L001.scheduleInsert();
-L002.scheduleInsert(); // Body의 포맷어레이 작성 미구현, 테스트용으로 5분 스케쥴 설정
-L003.scheduleInsert(); // Body 작성 미구현, 테스트용으로 5분 스케쥴 설정
-L005.scheduleInsert();
+L002.scheduleInsert();
+L003.scheduleInsert();
+L004.scheduleInsert();
+//L005.scheduleInsert(); //L013요청으로 대체
+L006.scheduleInsert();
+L007.scheduleInsert();
+L008.scheduleInsert();
+
+L010.scheduleInsert();
+
+//L012.scheduleInsert();
+L013.scheduleInsert();
 
 HighRank.searchAndtransm();
 

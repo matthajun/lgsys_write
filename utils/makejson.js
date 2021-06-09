@@ -3,7 +3,6 @@ const rescodes = require('./rescodes');
 const _ = require('loadsh');
 const winston = require('../config/winston')(module);
 const setDateTime = require('./setDateTime');
-const getRequestId = require('./getRequestId');
 
 module.exports.makeReqData = function (id){
     let reqData = {};
@@ -11,102 +10,7 @@ module.exports.makeReqData = function (id){
 
     const time = setDateTime.setDateTime();
 
-    const reqHeaderData = {"message_id": id, "keeper_id": process.env.KEEPER_ID, "send_time": time};
-    reqHeaderData.confirm_code = confirmutils.makeConfirmCode(JSON.stringify(reqBody));
-
-    reqData.header = reqHeaderData;
-    reqData.body = reqBody;
-    return reqData;
-};
-
-module.exports.makeReqData_H004 = function (id, policy_type){
-    let reqData = {};
-    let reqBody = {"policy_type": policy_type };
-
-    const time = setDateTime.setDateTime();
-
-    const reqHeaderData = {"message_id": id, "keeper_id": process.env.KEEPER_ID, "send_time": time};
-    reqHeaderData.confirm_code = confirmutils.makeConfirmCode(JSON.stringify(reqBody));
-
-    reqData.header = reqHeaderData;
-    reqData.body = reqBody;
-    return reqData;
-};
-
-module.exports.makeReqData_H005_bl = function (obj, created_type){
-    let reqData = {};
-
-    const time = setDateTime.setDateTime();
-
-    let Array = [];
-    for (let o of obj.original){
-        Array.push({ip: o.ip, port: o.port});
-    }
-
-    let reqHeaderData = {"message_id": 'H005', "keeper_id": process.env.KEEPER_ID, "send_time": time};
-
-    const reqBody = {request_id: obj.request_id, unit_id: obj.unit_id, make_id: obj.make_id, created_type: created_type, policy_type: '3',
-        policy_detail_type: 'single', policy_ip: [], policy_bl: Array, policy_connect: [], start_time: '', end_time: ''};
-
-    reqHeaderData.confirm_code = confirmutils.makeConfirmCode(JSON.stringify(reqBody));
-
-    reqData.header = reqHeaderData;
-    reqData.body = reqBody;
-    return reqData;
-};
-
-module.exports.makeReqData_H005_wh = function (obj, created_type){
-    let reqData = {};
-
-    const time = setDateTime.setDateTime();
-
-    let Array = [];
-    for (let o of obj.original){
-        Array.push({ip: o.ip});
-    }
-
-    let reqHeaderData = {"message_id": 'H005', "keeper_id": process.env.KEEPER_ID, "send_time": time};
-
-    const reqBody = {request_id: obj.request_id, unit_id: obj.unit_id, make_id: obj.make_id, created_type: created_type, policy_type: '1',
-        policy_detail_type: 'single', policy_ip: Array, policy_bl: [], policy_connect: [], start_time: '', end_time: ''};
-
-    reqHeaderData.confirm_code = confirmutils.makeConfirmCode(JSON.stringify(reqBody));
-
-    reqData.header = reqHeaderData;
-    reqData.body = reqBody;
-    return reqData;
-};
-
-module.exports.makeReqData_H005_connect= function (obj, created_type){
-    let reqData = {};
-
-    const time = setDateTime.setDateTime();
-
-    let Array = [];
-    for (let o of obj.original){
-        Array.push({...o});
-    }
-
-    let reqHeaderData = {"message_id": 'H005', "keeper_id": process.env.KEEPER_ID, "send_time": time};
-
-    const reqBody = {request_id: obj.request_id, unit_id: obj.unit_id, make_id: obj.make_id, created_type: created_type, policy_type: '2',
-        policy_detail_type: 'single', policy_ip: [], policy_bl: [], policy_connect: Array, start_time: '', end_time: ''};
-
-    reqHeaderData.confirm_code = confirmutils.makeConfirmCode(JSON.stringify(reqBody));
-
-    reqData.header = reqHeaderData;
-    reqData.body = reqBody;
-    return reqData;
-};
-
-module.exports.makeReqData_H008 = function (id, body){
-    let reqData = {};
-    let reqBody = body;
-
-    const time = setDateTime.setDateTime();
-
-    const reqHeaderData = {"message_id": id, "keeper_id": process.env.KEEPER_ID, "send_time": time};
-    reqHeaderData.confirm_code = confirmutils.makeConfirmCode(JSON.stringify(reqBody));
+    const reqHeaderData = {"message_id": id};
 
     reqData.header = reqHeaderData;
     reqData.body = reqBody;
@@ -116,9 +20,8 @@ module.exports.makeReqData_H008 = function (id, body){
 module.exports.makeReqData_L001 = function (id, page){
     let reqData = {};
 
-    const time = setDateTime.setDateTime();
-    const before_time = String(Number(time) - 500);
-    const long_before_time = String(Number(time) - 1000);
+    const before_time = setDateTime.setDateTime_ago(5);
+    const long_before_time = setDateTime.setDateTime_ago(10);
     const reqHeaderData = {"message_id": id, "logger_id": ''};
     const reqBody = {"loged_start_time": long_before_time, "loged_end_time": before_time, 'page': page};
 
@@ -141,11 +44,85 @@ module.exports.makeReqData_L002 = function (id){
 
 module.exports.makeReqData_L003 = function (id){
     let reqData = {};
-    let plant_id_array = ["DS001"];
-    let device_id_array = [];
+    let plant_id_array = ["DS_001"];
+    let device_id_array = ['OIS1','OIS2','OIS3'];
 
     const reqHeaderData = {"message_id": id, "logger_id": ''};
     const reqBody = {"plant_id_array": plant_id_array, "device_id_array": device_id_array};
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBody;
+    return reqData;
+};
+
+module.exports.makeReqData_L004 = function (plant_id, device_id, level_low, level_high ){
+    let reqData = {};
+    let plant_id_array = [plant_id];
+    let device_id_array = [device_id];
+
+    const reqHeaderData = {"message_id": 'L004', "logger_id": ''};
+    const reqBody = {"plant_id_array": plant_id_array, "device_id_array": device_id_array,
+            "log_type_array": [], "log_category_array": [], "log_event_level_low" : level_low,
+            "log_event_level_high": level_high, "simplicity": 0};
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBody;
+    return reqData;
+};
+
+module.exports.makeReqData_L005 = function (id, page){
+    let reqData = {};
+
+    const before_time = setDateTime.setDateTime_ago(1);
+    const long_before_time = setDateTime.setDateTime_ago(2);
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+    const reqBody = {"stat_start_time": long_before_time, "stat_end_time": before_time, 'page': page};
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBody;
+    return reqData;
+};
+
+module.exports.makeReqData_L006 = function (id, body){
+    let reqData = {};
+
+    let plant_id_array = ["DS_001"];
+    let device_id_array = [body.deviceId];
+
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+    const reqBody = {//"seq": '', "alarm_log": {"seq":'', "device_id": ''},
+        "plant_id_array": plant_id_array,
+        "device_id_array": device_id_array, "log_type_array": [], "log_category_array": [],
+        "loged_start_time": setDateTime.changeFormat(body.startTime), "loged_end_time": setDateTime.changeFormat(body.endTime),
+        "simplicity":1 };
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBody;
+    return reqData;
+};
+
+module.exports.makeReqData_L007 = function (id, body){
+    let reqData = {};
+
+    let plant_id_array = ["DS_001"];
+    let device_id_array = [body.deviceId];
+
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+    const reqBody = {"plant_id_array": plant_id_array,
+        "device_id_array": device_id_array, "log_type_array": [], "log_category_array": [],
+        "stat_start_time": setDateTime.changeFormat(body.startTime), "stat_end_time": setDateTime.changeFormat(body.endTime),
+        "log_event_level_low" : 30, "log_event_level_high": -1 };
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBody;
+    return reqData;
+};
+
+module.exports.makeReqData_L008 = function (id, device_array){
+    let reqData = {};
+
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+    const reqBody = {"device_array": device_array};
 
     reqData.header = reqHeaderData;
     reqData.body = reqBody;
@@ -183,3 +160,37 @@ module.exports.makeResData = function (err, req){
     resData.body = resBody;
     return resData;
 };
+
+module.exports.makeReqData_L010 = function (id, data){
+    let reqData = {};
+
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+    const reqBody = {signature_array: data};
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBody;
+    return reqData;
+};
+
+module.exports.makeReqData_L012 = function (id, page){
+    let reqData = {};
+
+    const before_time = setDateTime.setDateTime_ago(1);
+    const long_before_time = setDateTime.setDateTime_ago(6);
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+    const reqBody = {"stat_start_time": long_before_time, "stat_end_time": before_time, 'page': page};
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBody;
+    return reqData;
+};
+
+module.exports.makeReqData_L013 = function (id){
+    let reqData = {};
+
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+
+    reqData.header = reqHeaderData;
+    return reqData;
+};
+

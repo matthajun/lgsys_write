@@ -5,8 +5,21 @@ const makereq = require('../utils/makerequest');
 const schedule = require('node-schedule');
 const _ = require('loadsh');
 
+Array.prototype.division = function (n) {
+    let arr = this;
+    let len = arr.length;
+    let cnt = Math.floor(len / n) + (Math.floor(len % n) > 0 ? 1 : 0);
+    let tmp = [];
+
+    for (let i = 0; i < cnt; i++) {
+        tmp.push(arr.splice(0, n));
+    }
+
+    return tmp;
+};
+
 module.exports.searchAndtransm = async function() {
-    schedule.scheduleJob('49 * * * * *', async function() {
+    schedule.scheduleJob(process.env.HIGHRANK_TIME, async function() {
         let rtnResult = {};
         try {
             const tableNames = process.env.TABLE_NAMES.split(',');
@@ -15,8 +28,6 @@ module.exports.searchAndtransm = async function() {
                 const result = await db.sequelize.transaction(async (t) => {
                     let tableInfo = {};
 
-                    winston.info("********************************************************************************");
-                    winston.info("*******************query start *************************");
                     let rslt = await db[tableName.toUpperCase()].findAll({where: {trans_tag: 'C'}}).then(users => {
                         if (users) {
                             let childTable = [];
@@ -24,13 +35,22 @@ module.exports.searchAndtransm = async function() {
                                 user.update({trans_tag: 'E'});
                                 childTable.push(user.dataValues);
                             }
-                            tableInfo = {tableName: tableName, tableData: childTable};
-                            makereq.highrankPush(tableInfo);
+
+                            if(childTable.length > 40){
+                                winston.info('********************************'+tableName+' 테이블의 Value 갯수가 40개가 넘었습니다. ********************************')
+                                let motherTable = childTable.division(40);
+
+                                for(let daughtTable of motherTable){
+                                    tableInfo = {tableName: tableName, tableData: _.cloneDeep(daughtTable)};
+                                    makereq.highrankPush(tableInfo);
+                                }
+                            }
+                            else if (childTable.length){
+                                tableInfo = {tableName: tableName, tableData: _.cloneDeep(childTable)};
+                                makereq.highrankPush(tableInfo);
+                            }
                         }
                     });
-                    //winston.info(9999999+JSON.stringify(tableInfo));
-                    winston.info("********************************************************************************");
-                    winston.info("*******************query end *************************");
                 });
             }
         } catch (error) {

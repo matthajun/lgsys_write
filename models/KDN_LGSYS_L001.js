@@ -49,67 +49,67 @@ module.exports = class KDN_LGSYS_L001 extends Sequelize.Model {
                 allowNull: true,
             },
             type01: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             type02: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             type03: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             code01: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             code02: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             code03: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             value01: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             value02: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             value03: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             value04: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             value05: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             value06: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             value07: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             content01: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             content02: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             content03: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             raw: {

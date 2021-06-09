@@ -25,7 +25,7 @@ module.exports.parseAndInsert = async function(req) {
     let Array = [];
     let queries = [];
 
-    if(req.body.list !== null) {
+    if(req.body.list) {
         for (let list of req.body.list) {
             let req_body = {};
             req_body = {
@@ -36,17 +36,20 @@ module.exports.parseAndInsert = async function(req) {
             Array.push(req_body);
         }
         for (let value of Array) {
-            const contents = `${value.message_id}` + '\',\'' + `${value.normalSeq}` + '\',\'' + `${value.plant_id}` + '\',\'' + `${value.plant_name}`
+            const contents = `${value.message_id}` + '\',\'' + `${value.normal_seq}` + '\',\'' + `${value.plant_id}` + '\',\'' + `${value.plant_name}`
                 + '\',\'' + `${value.machine_no}` + '\',\'' + `${value.manufacturer_name}` + '\',\'' + `${value.log_type}` + '\',\'' + `${value.log_category}`
                 + '\',\'' + `${value.format}` + '\',\'' + `${value.device_id}` + '\',\'' + `${value.device_name}` + '\',\'' + `${value.loged_time}` + '\',\'' + `${value.event_level}`
                 + '\',\'' + `${value.type01}` + '\',\'' + `${value.type02}` + '\',\'' + `${value.type03}` + '\',\'' + `${value.code01}` + '\',\'' + `${value.code02}`
                 + '\',\'' + `${value.code03}` + '\',\'' + `${value.value01}` + '\',\'' + `${value.value02}` + '\',\'' + `${value.value03}`
                 + '\',\'' + `${value.value04}` + '\',\'' + `${value.value05}` + '\',\'' + `${value.value06}` + '\',\'' + `${value.value07}`
-                + '\',\'' + `${value.event_info}` + '\',\'' + `${value.stat_time}` + '\',\'' + `${value.sent_time}` + '\',\'' + `${value.date_time}`;
+                + '\',\'' + JSON.stringify(value.event_info) + '\',\'' + `${value.stat_time}` + '\',\'' + `${value.sent_time}` + '\',\'' + `${value.date_time}`;
 
             const query = `insert into dti.${tableName} VALUES (\'${contents}\')`;
             queries.push(query);
         }
+    }
+    else{
+        winston.error('****************** body.list가 없습니다. ******************************')
     }
 
     let rtnResult = {};
