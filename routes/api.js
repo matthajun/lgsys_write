@@ -9,6 +9,7 @@ const L009_ch = require('../clickhouse/L009');
 const L009_ch_bu = require('../clickhouse/L009_bumun');
 const L011_ch = require('../clickhouse/L011');
 const L011_ch_bu = require('../clickhouse/L011_bumun');
+const L014 = require('../service/L014');
 
 router.post('/v1', async (req, res, next) => {
     try {
@@ -31,6 +32,10 @@ router.post('/v1', async (req, res, next) => {
                     result = await L009.parseAndInsert(req);
                     ch_result = await L011_ch.parseAndInsert(req);
                     ch_bu_result = await L011_ch_bu.parseAndInsert(req);
+                    break;
+
+                case "L014" :
+                    result = await L014.parseAndInsert(req);
                     break;
 
                 default:

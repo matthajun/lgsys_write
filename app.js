@@ -30,6 +30,7 @@ const L010 = require('./schedule/L010_schedule');
 
 const L012 = require('./schedule/L012_schedule');
 const L013 = require('./schedule/L013_schedule');
+const L014 = require('./schedule/L014_schedule');
 
 const HighRank = require('./service/HighRank');
 
@@ -107,10 +108,6 @@ app.use((err, req, res, next) => {
 
 app.set('etag', false);
 
-app.listen(app.get('port'), () => {
-    winston.info(app.get('port')+ '번 포트에서 대기중');
-});
-
 L001.scheduleInsert();
 L002.scheduleInsert();
 L003.scheduleInsert();
@@ -124,6 +121,7 @@ L010.scheduleInsert();
 
 //L012.scheduleInsert();
 L013.scheduleInsert();
+L014.scheduleInsert();
 
 HighRank.searchAndtransm();
 

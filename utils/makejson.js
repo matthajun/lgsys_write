@@ -45,7 +45,7 @@ module.exports.makeReqData_L002 = function (id){
 module.exports.makeReqData_L003 = function (id){
     let reqData = {};
     let plant_id_array = ["DS_001"];
-    let device_id_array = ['OIS1','OIS2','OIS3'];
+    let device_id_array = [];
 
     const reqHeaderData = {"message_id": id, "logger_id": ''};
     const reqBody = {"plant_id_array": plant_id_array, "device_id_array": device_id_array};

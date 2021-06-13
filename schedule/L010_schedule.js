@@ -18,15 +18,16 @@ module.exports.scheduleInsert = () => {
             const result = await db.sequelize.transaction(async (t) => {
                 let tableName = process.env.SIGNATURE_TABLE;
                 let rslt = await db[tableName.toUpperCase()].findAll({attributes: ['id', 'column', 'keyword', 'description', 'state', 'user', 'deploy', 'dttm'],
-                    where: {state: ['C','U']}})
+                    where: {state: ['C','U','D']}})
                     .then(async users => {
                         if (users.length) {
                             winston.info("******************* L010 Request is found!!! *************************");
                             for (user of users) {
                                 let data = {...user.dataValues};
+                                let result = {};
 
                                 if(data.state === 'C') {
-                                    let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy };
+                                    let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 10 };
                                     signature_array.push(child_data);
                                     await user.update({state: 'E'});
                                 }
@@ -34,9 +35,24 @@ module.exports.scheduleInsert = () => {
                                     let tableInfo = {tableName: 'motie_signature', tableData: data};
                                     makereq.highrankPush(tableInfo);
 
-                                    let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy };
+                                    let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 10 };
                                     signature_array.push(child_data);
                                     await user.update({state: 'E'});
+                                }
+                                else if (data.state === 'D') {
+                                    result = await user.update({state: 'DE'});
+                                    data.state = 'DE';
+
+                                    if (result instanceof Error) {
+                                        throw new Error(result);
+                                    }
+                                    else {
+                                        let tableInfo = {tableName: 'motie_signature', tableData: data};
+                                        makereq.highrankPush(tableInfo);
+                                    }
+
+                                    let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 20 };
+                                    signature_array.push(child_data);
                                 }
                             }
 
@@ -50,13 +66,13 @@ module.exports.scheduleInsert = () => {
                                     L004.parseAndInsert(history);
                                 } else {
                                     winston.error('************************* res 값이 없습니다. *************************');
-                                    let history = {message_id: 'L010', res_cd: '500', res_msg: '로그 분석 시스템 응답 없음', contents: JSON.stringify(value),
-                                        sent_time: setDateTime.setDateTime(), date_time: setDateTime.setDateTime()};
+                                    let history = {header:{message_id: 'L010'}, body:{result:{}, res_cd: '500', res_msg: '로그 분석 시스템 응답 없음', contents: JSON.stringify(value.body),
+                                            sent_time: setDateTime.setDateTime(), date_time: setDateTime.setDateTime()}};
                                     L004.parseAndInsert(history);
                                     console.log(err);
                                 }
                                 if (err) {
-                                    winston.error("****************** L004 송신 에러!**********************");
+                                    winston.error("****************** L010 송신 에러!**********************");
                                     console.log(err);
                                 }
                             });
