@@ -29,33 +29,30 @@ async function L001_schedule(num) {
             if (res.body.list) {
                 let k = res.body.result.total_page;
                 if (k >= 2) {
-
                     for (let index = 2; index <= k; index++) {
+                        setTimeout(function() {
+                            value.body.page = index;
 
-                        let value_for = makejson.makeReqData_L001('L001', index);
+                            httpcall.Call('get', process.env.L001_ADDRESS, value, async function (err, res) {
+                                if (res) {
+                                    const resData = res;
+                                    const resConfirmCode = resData.body.result.checksum;
+                                    if (resConfirmCode) {
+                                        const localMakeConfirmCode = await confirmutils.makeConfirmCode(resData.body.list);
 
-                        httpcall.Call('get', process.env.L001_ADDRESS, value_for, async function (err, res) {
-                            if (res) {
-                                const resData = res;
-                                const resConfirmCode = resData.body.result.checksum;
-                                if(resConfirmCode) {
-                                    const localMakeConfirmCode = await confirmutils.makeConfirmCode(resData.body.list);
-
-                                    if (resConfirmCode !== localMakeConfirmCode) {
-                                        winston.error(`우리쪽 값 ${localMakeConfirmCode} ,  받은 값 ${resConfirmCode}`);
-                                        throw Error('************** CheckSum 값이 일치하지 않아 데이터를 저장하지 않습니다. **************');
+                                        if (resConfirmCode !== localMakeConfirmCode) {
+                                            winston.error(`우리쪽 값 ${localMakeConfirmCode} ,  받은 값 ${resConfirmCode}`);
+                                            throw Error('************** CheckSum 값이 일치하지 않아 데이터를 저장하지 않습니다. **************');
+                                        }
                                     }
-                                }
 
-                                result_for = await L001.parseAndInsert(res, index);
-
-                                if (result_for instanceof Error) {
-                                    throw new Error(result_for);
+                                    await L001.parseAndInsert(res, index);
                                 }
-                            } else {
-                                winston.error('************************* index: ' + index + '번 실패 *************************');
-                            }
-                        })
+                                else {
+                                    winston.error('************************* index: ' + index + '번 실패 *************************');
+                                }
+                            })
+                        },1000)
                     }
                 }
             }

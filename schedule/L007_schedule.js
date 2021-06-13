@@ -50,7 +50,6 @@ exports.scheduleInsert = () => {
 
                                             if (resConfirmCode !== localMakeConfirmCode) {
                                                 winston.error(`우리쪽 값 ${localMakeConfirmCode} ,  받은 값 ${resConfirmCode}`);
-                                                throw Error('************** CheckSum 값이 일치하지 않아 데이터를 저장하지 않습니다. **************');
 
                                                 await db[tableName.toUpperCase()].update({
                                                     state: '201',
@@ -59,6 +58,8 @@ exports.scheduleInsert = () => {
                                                 user.state = '201';
                                                 user.stateValue = '500';
                                                 winston.info('************** 상태값 500로 업데이트! ****************');
+
+                                                throw Error('************** CheckSum 값이 일치하지 않아 데이터를 저장하지 않습니다. **************');
                                             }
                                         }
 

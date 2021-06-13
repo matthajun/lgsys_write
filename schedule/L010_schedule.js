@@ -26,7 +26,7 @@ module.exports.scheduleInsert = () => {
                                 let data = {...user.dataValues};
                                 let result = {};
 
-                                if(data.state === 'C') {
+                                if (data.state === 'C') {
                                     let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 10 };
                                     signature_array.push(child_data);
                                     await user.update({state: 'E'});
