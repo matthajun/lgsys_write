@@ -11,13 +11,15 @@ const L011_ch = require('../clickhouse/L011');
 const L011_ch_bu = require('../clickhouse/L011_bumun');
 const L014 = require('../service/L014');
 
+const Transaction = require('../utils/Transanction');
+
 router.post('/v1', async (req, res, next) => {
     try {
         if(req.body.header.message_id) {
             winston.debug("post id " + req.body.header.message_id);
             const codeId = req.body.header.message_id;
 
-            let result = {};
+            let result;
             let ch_result = {};
             let ch_bu_result = {};
 
@@ -50,6 +52,13 @@ router.post('/v1', async (req, res, next) => {
                 throw new Error(ch_result);
             } else {
                 res.json(makejson.makeResData(null, req));
+
+                if(codeId !== 'L014') {
+                    setTimeout(function () {
+                        winston.info('seq 전달 값 : '+ JSON.stringify(result));
+                        Transaction.Transaction(codeId, req.body.body.tid, result);
+                    }, 200);
+                }
             }
         }
         else {
@@ -57,7 +66,6 @@ router.post('/v1', async (req, res, next) => {
             const stix_res = {"body":{"header":{"message_id":"STIX"}}};
             res.json(makejson.makeResData(null, stix_res));
         }
-
     } catch (err) {
         next(err);
     }

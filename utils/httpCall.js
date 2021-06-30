@@ -80,10 +80,11 @@ exports.Rest = function (method, url, headers, query, callback) {
     }
 };
 
+
 exports.Call = function (method, url, query, callback) {
     //winston.debug("method / url : " + method + " / " + url);
     //winston.debug("query : " + query);
-    const auth = 'Basic ' +  Buffer.from('admin:1111').toString('base64');
+    const auth = 'Basic ' +  Buffer.from('admin:admin1111').toString('base64');
     var headers = {
         //Authorization: global.esAuth,
         'Content-Type': 'application/json'

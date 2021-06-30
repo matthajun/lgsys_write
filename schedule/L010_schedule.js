@@ -17,7 +17,7 @@ module.exports.scheduleInsert = () => {
         try {
             const result = await db.sequelize.transaction(async (t) => {
                 let tableName = process.env.SIGNATURE_TABLE;
-                let rslt = await db[tableName.toUpperCase()].findAll({attributes: ['id', 'column', 'keyword', 'description', 'state', 'user', 'deploy', 'dttm'],
+                let rslt = await db[tableName.toUpperCase()].findAll({attributes: ['id', 'column', 'keyword', 'description', 'state', 'user', 'deploy', 'dttm', 'sanGubun'],
                     where: {state: ['C','U','D']}})
                     .then(async users => {
                         if (users.length) {
@@ -27,7 +27,7 @@ module.exports.scheduleInsert = () => {
                                 let result = {};
 
                                 if (data.state === 'C') {
-                                    let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 10 };
+                                    let child_data = {who: data.sanGubun, column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 10 };
                                     signature_array.push(child_data);
                                     await user.update({state: 'E'});
                                 }
@@ -35,7 +35,7 @@ module.exports.scheduleInsert = () => {
                                     let tableInfo = {tableName: 'motie_signature', tableData: data};
                                     makereq.highrankPush(tableInfo);
 
-                                    let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 10 };
+                                    let child_data = {who: data.sanGubun, column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 10 };
                                     signature_array.push(child_data);
                                     await user.update({state: 'E'});
                                 }
@@ -51,7 +51,7 @@ module.exports.scheduleInsert = () => {
                                         makereq.highrankPush(tableInfo);
                                     }
 
-                                    let child_data = {column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 20 };
+                                    let child_data = {who: data.sanGubun, column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 20 };
                                     signature_array.push(child_data);
                                 }
                             }

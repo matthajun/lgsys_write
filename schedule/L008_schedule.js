@@ -14,7 +14,7 @@ exports.scheduleInsert = () => {
     schedule.scheduleJob(process.env.L008_TIME, function() {
         const result = db.sequelize.transaction(async (t) => {
             let rslt = await db.sequelize.query(
-                'SELECT distinct dti.motie_asset_ip.deviceId as device_id, ' +
+                'SELECT distinct dti.motie_asset_ip.deviceId as device_id, sanGubun as who, ' +
                 'cpuNotice as cpu_notice, cpuWarning as cpu_warning, memoryNotice as memory_notice, ' +
                 'memoryWarning as memory_warning, diskNotice as disk_notice, diskwarning as disk_warning ' +
                 'FROM dti.motie_log_system inner join dti.motie_asset on dti.motie_log_system.assetNm = dti.motie_asset.assetNm ' +

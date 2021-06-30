@@ -7,6 +7,10 @@ module.exports = class KDN_LGSYS_L011 extends Sequelize.Model {
                 type: Sequelize.STRING(10),
                 allowNull: true,
             },
+            t_id: {
+                type: Sequelize.STRING(70),
+                allowNull: true,
+            },
             seq: {
                 type: Sequelize.INTEGER,
                 allowNull: true,

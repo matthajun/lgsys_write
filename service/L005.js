@@ -7,6 +7,7 @@ const setDateTime = require('../utils/setDateTime');
 let tablePrefix = process.env.LOG_TABLE_PREFIX;
 let tableName = "";
 let masterTableName = "";
+let tranArray = [];
 
 module.exports.parseAndInsert = async function(req){
     if(req) {
@@ -48,21 +49,21 @@ module.exports.parseAndInsert = async function(req){
         try {
 
             const result = await db.sequelize.transaction(async (t) => {
+                let rslt = {};
                 winston.info("******************* "+req.header.message_id+" query start *************************");
                 for (const tableInfo of tableInfos) {
                     //winston.debug(JSON.stringify(tableInfo));
                     if (!Array.isArray(tableInfo.tableData)) {
-                        let rslt = await db[tableInfo.tableName.toUpperCase()].create(tableInfo.tableData, {transaction: t});
-                        //rlst =  new Error("임의 발생");
-                        if (rslt instanceof Error) {
-                            throw new rslt;
-                        }
+                        rslt = await db[tableInfo.tableName.toUpperCase()].create(tableInfo.tableData, {transaction: t});
                     } else {
                         for (const chileTableData of tableInfo.tableData) {
-                            let rslt = await db[tableInfo.tableName.toUpperCase()].create(chileTableData, {transaction: t});
+                            rslt = await db[tableInfo.tableName.toUpperCase()].create(chileTableData, {transaction: t});
                             //rslt = new Error("임의 발생");
                             if (rslt instanceof Error) {
                                 throw new rslt;
+                            }
+                            else {
+                                tranArray.push(chileTableData.normal_seq);
                             }
                         }
                     }
@@ -76,7 +77,12 @@ module.exports.parseAndInsert = async function(req){
             winston.error(error.stack);
             rtnResult = error;
         } finally {
-            return rtnResult;
+            if(Object.keys(rtnResult).length) {
+                return rtnResult;
+            }
+            else{
+                return tranArray;
+            }
         }
     }
 };

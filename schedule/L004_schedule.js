@@ -18,7 +18,7 @@ exports.scheduleInsert = () => {
                 'SELECT distinct dti.motie_log_system.powerGenId, dti.motie_log_system.assetNm, dti.motie_asset_ip.deviceId, levelLow, \n' +
                 'levelHight, dti.motie_log_system.id, dti.motie_log_system.stationId, cpuNotice, cpuWarning, memoryNotice, memoryWarning, diskNotice, diskwarning, ' +
                 'content, dti.motie_log_system.fstUser, dti.motie_log_system.fstDttm, dti.motie_log_system.lstUser, dti.motie_log_system.lstDttm, ' +
-                'state_level, stateValue FROM dti.motie_log_system inner join dti.motie_asset on dti.motie_log_system.assetNm = dti.motie_asset.assetNm \n' +
+                'state_level, stateValue, sanGubun FROM dti.motie_log_system inner join dti.motie_asset on dti.motie_log_system.assetNm = dti.motie_asset.assetNm \n' +
                 'inner join dti.motie_asset_ip on dti.motie_asset.assetId = dti.motie_asset_ip.assetId \n' +
                 'where state_level = \'C\' or state_level = \'U\';'
                 ,{
@@ -28,7 +28,7 @@ exports.scheduleInsert = () => {
                 if(users.length) {
                     for (let user of users) {
 
-                        let value = makejson.makeReqData_L004(user.powerGenId, user.deviceId, user.levelLow, user.levelHight);
+                        let value = makejson.makeReqData_L004(user.powerGenId, user.deviceId, user.levelLow, user.levelHight, user.sanGubun);
                         winston.debug(JSON.stringify(value));
 
                         httpcall.Call('POST', process.env.L004_ADDRESS, value, async function (err, res) {
@@ -65,6 +65,11 @@ exports.scheduleInsert = () => {
                         setTimeout(function() {
                             if (user.state_level === 'U') {
                                 winston.debug('*************** L004 업데이트 전송 ***************');
+                                let tableInfo = {tableName: 'motie_log_system', tableData: user};
+                                makereq.highrankPush(tableInfo);
+                            }
+                            if (user.state_level === 'C') {
+                                winston.debug('*************** L004 생성완료 전송 ***************');
                                 let tableInfo = {tableName: 'motie_log_system', tableData: user};
                                 makereq.highrankPush(tableInfo);
                             }

@@ -31,6 +31,8 @@ const L010 = require('./schedule/L010_schedule');
 const L012 = require('./schedule/L012_schedule');
 const L013 = require('./schedule/L013_schedule');
 const L014 = require('./schedule/L014_schedule');
+const L018 = require('./schedule/L018_schedule');
+const L019 = require('./schedule/L019_schedule');
 
 const HighRank = require('./service/HighRank');
 
@@ -122,6 +124,9 @@ L010.scheduleInsert();
 //L012.scheduleInsert();
 L013.scheduleInsert();
 L014.scheduleInsert();
+
+L018.scheduleInsert();
+L019.scheduleInsert();
 
 HighRank.searchAndtransm();
 

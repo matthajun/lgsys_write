@@ -6,14 +6,10 @@ const setDateTime = require('./setDateTime');
 
 module.exports.makeReqData = function (id){
     let reqData = {};
-    let reqBody = {};
 
-    const time = setDateTime.setDateTime();
-
-    const reqHeaderData = {"message_id": id};
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
 
     reqData.header = reqHeaderData;
-    reqData.body = reqBody;
     return reqData;
 };
 
@@ -55,13 +51,13 @@ module.exports.makeReqData_L003 = function (id){
     return reqData;
 };
 
-module.exports.makeReqData_L004 = function (plant_id, device_id, level_low, level_high ){
+module.exports.makeReqData_L004 = function (plant_id, device_id, level_low, level_high, who ){
     let reqData = {};
     let plant_id_array = [plant_id];
     let device_id_array = [device_id];
 
     const reqHeaderData = {"message_id": 'L004', "logger_id": ''};
-    const reqBody = {"plant_id_array": plant_id_array, "device_id_array": device_id_array,
+    const reqBody = {"who": who,"plant_id_array": plant_id_array, "device_id_array": device_id_array,
             "log_type_array": [], "log_category_array": [], "log_event_level_low" : level_low,
             "log_event_level_high": level_high, "simplicity": 0};
 
@@ -129,38 +125,6 @@ module.exports.makeReqData_L008 = function (id, device_array){
     return reqData;
 };
 
-module.exports.makeResData = function (err, req){
-    let resData={};
-    let resBody={};
-    const reqHeaderData = _.cloneDeep(req.body.header);
-    if(!err){
-        resBody = {"result":{"res_cd":"00","res_msg":"정상처리"}};
-    }else{
-        let errMessage;
-        let errResult;
-        try{
-            errMessage = JSON.parse(err.message);
-            if(errMessage.res_cd){
-                errResult = errMessage;
-            }else{
-                errResult = {"res_cd":"99"};
-            }
-        }catch (e) {
-            winston.error(err.stack, {e});
-            errResult = {"res_cd":"99"};
-        }
-
-        resBody["result"] = errResult;
-        resBody.result["res_msg"] = rescodes[resBody.result.res_cd];
-    }
-    if(req.body.header.message_id[0] !== 'L') {
-        reqHeaderData.confirm_code = confirmutils.makeConfirmCode(JSON.stringify(resBody));
-    }
-    resData.header = reqHeaderData;
-    resData.body = resBody;
-    return resData;
-};
-
 module.exports.makeReqData_L010 = function (id, data){
     let reqData = {};
 
@@ -194,3 +158,46 @@ module.exports.makeReqData_L013 = function (id){
     return reqData;
 };
 
+module.exports.makeReqData_L015 = function (id, tid, seq_array){
+    let reqData = {};
+
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+    const reqBodyData = {"tid": tid, "seq_array": seq_array};
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBodyData;
+
+    return reqData;
+};
+
+module.exports.makeResData = function (err, req){
+    let resData={};
+    let resBody={};
+    const reqHeaderData = _.cloneDeep(req.body.header);
+    if(!err){
+        resBody = {"result":{"res_cd":"00","res_msg":"정상처리"}};
+    }else{
+        let errMessage;
+        let errResult;
+        try{
+            errMessage = JSON.parse(err.message);
+            if(errMessage.res_cd){
+                errResult = errMessage;
+            }else{
+                errResult = {"res_cd":"99"};
+            }
+        }catch (e) {
+            winston.error(err.stack, {e});
+            errResult = {"res_cd":"99"};
+        }
+
+        resBody["result"] = errResult;
+        resBody.result["res_msg"] = rescodes[resBody.result.res_cd];
+    }
+    if(req.body.header.message_id[0] !== 'L') {
+        reqHeaderData.confirm_code = confirmutils.makeConfirmCode(JSON.stringify(resBody));
+    }
+    resData.header = reqHeaderData;
+    resData.body = resBody;
+    return resData;
+};

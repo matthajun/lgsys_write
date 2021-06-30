@@ -97,6 +97,10 @@ module.exports = class MOTIE_LOG_SYSTEM extends Sequelize.Model {
                 allowNull: false,
                 defaultValue: 20,
             },
+            sanGubun:{
+                type: Sequelize.INTEGER,
+                allowNull: true,
+            },
         }, {
             sequelize,
             timestamps: false,

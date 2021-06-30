@@ -9,8 +9,9 @@ let tableName = "";
 let masterTableName = "";
 
 module.exports.parseAndInsert = async function(req){
+    let seq = [];
+
     if(req) {
-        //console.log(req.body);
         masterTableName = tablePrefix + req.body.header.message_id;
         const time = setDateTime.setDateTime();
         const reqBodyData = {...req.body.body};
@@ -23,7 +24,7 @@ module.exports.parseAndInsert = async function(req){
 
                 for (let rowData of value) {
                     childTableInfos.push({
-                        ...rowData, ...req.body.header, date_time: time
+                        ...rowData, ...req.body.header, date_time: time, tid: req.body.body.tid
                     });
                 }
                 tableInfos.push({tableName, tableData: childTableInfos});
@@ -32,7 +33,6 @@ module.exports.parseAndInsert = async function(req){
 
         let rtnResult = {};
         try {
-
             const result = await db.sequelize.transaction(async (t) => {
                 winston.info("********************************************************************************");
                 winston.info("*******************query start *************************");
@@ -51,20 +51,25 @@ module.exports.parseAndInsert = async function(req){
                             if (rslt instanceof Error) {
                                 throw new rslt;
                             }
+                            else {
+                                seq.push(chileTableData.seq);
+                            }
                         }
                     }
                 }
-                winston.info("********************************************************************************");
                 winston.info("*******************query end *************************");
             });
-
         } catch (error) {
             // If the execution reaches this line, an error occurred.
             // The transaction has already been rolled back automatically by Sequelize!
             winston.error(error.stack);
             rtnResult = error;
         } finally {
-            return rtnResult;
+            if(rtnResult instanceof Error) {
+                return rtnResult;
+            }
+            else
+                return seq;
         }
     }
 };

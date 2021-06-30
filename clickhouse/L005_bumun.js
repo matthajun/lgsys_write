@@ -1,7 +1,5 @@
 const winston = require('../config/winston')(module);
 const setDateTime = require('../utils/setDateTime');
-const sequelize = require('sequelize');
-const db = require('../models');
 
 const {ClickHouse} = require('clickhouse');
 const clickhouse = new ClickHouse({
@@ -30,13 +28,14 @@ module.exports.parseAndInsert = async function(req) {
             let req_body = {};
             req_body = {
                 message_id: req.header.message_id, ...list,
+                tid: req.body.result.tid,
                 sent_time: req.body.sent_time,
                 date_time: setDateTime.setDateTime()
             };
             Array.push(req_body);
         }
         for (let value of Array) {
-            const contents = `${value.message_id}` + '\',\'' + `${value.normal_seq}` + '\',\'' + `${value.plant_id}` + '\',\'' + `${value.plant_name}`
+            const contents = `${value.message_id}` + '\',\'' + `${value.tid}`  + '\',\'' + `${value.normal_seq}` + '\',\'' + `${value.plant_id}` + '\',\'' + `${value.plant_name}`
                 + '\',\'' + `${value.machine_no}` + '\',\'' + `${value.manufacturer_name}` + '\',\'' + `${value.log_type}` + '\',\'' + `${value.log_category}`
                 + '\',\'' + `${value.format}` + '\',\'' + `${value.device_id}` + '\',\'' + `${value.device_name}` + '\',\'' + `${value.loged_time}` + '\',\'' + `${value.event_level}`
                 + '\',\'' + `${value.type01}` + '\',\'' + `${value.type02}` + '\',\'' + `${value.type03}` + '\',\'' + `${value.code01}` + '\',\'' + `${value.code02}`
@@ -54,16 +53,11 @@ module.exports.parseAndInsert = async function(req) {
 
     let rtnResult = {};
     try {
-
-        const trans = await db.sequelize.transaction(async (t) => {
-            winston.info("********************************************************************************");
             winston.info("******************* CH query start *************************");
             for (const query of queries) {
                 const r = await clickhouse.query(query).toPromise();
             }
-            winston.info("********************************************************************************");
             winston.info("******************* CH query end *************************");
-        })
 
     } catch (error) {
         winston.error(error.stack);

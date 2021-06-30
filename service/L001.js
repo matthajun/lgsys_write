@@ -38,7 +38,6 @@ module.exports.parseAndInsert = async function(req, connect){
                                 ...rowData, ...req.header, ...req.body, date_time: time
                             });
                         }
-
                         tableInfos.push({tableName, tableData: childTableInfos2});
                         break;
                 }
@@ -61,7 +60,6 @@ module.exports.parseAndInsert = async function(req, connect){
 
         try {
             const result = await db.sequelize.transaction(async (t) => {
-                winston.info("********************************************************************************");
                 winston.info("*******************query start *************************");
                 for (const tableInfo of tableInfos) {
                     //winston.debug(JSON.stringify(tableInfo));
@@ -81,7 +79,6 @@ module.exports.parseAndInsert = async function(req, connect){
                         }
                     }
                 }
-                winston.info("********************************************************************************");
                 winston.info("*******************query end *************************");
             });
 

@@ -7,28 +7,51 @@ const winston = require('../config/winston')(module);
 const confirmutils = require('../utils/confirmutils');
 
 const L005 = require('../service/L005');
+const L015 = require('../service/L015');
 
 async function L013_schedule(num) {
     let value = makejson.makeReqData_L013('L013');
+    let result = {};
 
     httpcall.Call('get', process.env.L013_ADDRESS, value,  async function (err, res) {
         if(res) {
-            const resData = res;
-            const resConfirmCode = resData.body.result.checksum;
-            if (resConfirmCode) {
-                const localMakeConfirmCode = await confirmutils.makeConfirmCode(resData.body.list);
+            if(res.body.list) {
+                const resData = res;
+                const resConfirmCode = resData.body.result.checksum;
+                if (resConfirmCode) {
+                    const localMakeConfirmCode = await confirmutils.makeConfirmCode(resData.body.list);
 
-                if (resConfirmCode !== localMakeConfirmCode) {
-                    winston.error(`우리쪽 값 ${localMakeConfirmCode} ,  받은 값 ${resConfirmCode}`);
-                    throw Error('************** CheckSum 값이 일치하지 않아 데이터를 저장하지 않습니다. **************');
+                    if (resConfirmCode !== localMakeConfirmCode) {
+                        winston.error(`우리쪽 값 ${localMakeConfirmCode} ,  받은 값 ${resConfirmCode}`);
+                        throw Error('************** CheckSum 값이 일치하지 않아 데이터를 저장하지 않습니다. **************');
+                    }
+                    //winston.info(`단위위협시스템 값 ${localMakeConfirmCode} ,  로그시스템 값 ${resConfirmCode}`);
+                    //winston.info('****************************** 정합성 코드가 일치합니다.*************************');
                 }
-                winston.info(`단위위협시스템 값 ${localMakeConfirmCode} ,  로그시스템 값 ${resConfirmCode}`);
-                winston.info('****************************** 정합성 코드가 일치합니다.*************************');
-            }
 
-            CH_L005.parseAndInsert(res);
-            CH_L005_b.parseAndInsert(res);
-            L005.parseAndInsert(res);
+                await CH_L005.parseAndInsert(res);
+                await CH_L005_b.parseAndInsert(res);
+                result = await L005.parseAndInsert(res);
+
+                //트랜잭션 처리
+                if (result instanceof Error) {
+                    throw new result;
+                } else {
+                    const logRes = makejson.makeReqData_L015('L015', res.body.result.tid, result);
+
+                    httpcall.Call('post', process.env.L015_ADDRESS, logRes, async function (err, res) {
+                        if (res) {
+                            await L015.parseAndInsert(res);
+                        } else {
+                            winston.error('************************* res 값이 없습니다. *************************');
+                            winston.error('************************* L013의 트랜잭션 처리에 실패했습니다. *************************');
+                        }
+                    })
+                }
+            }
+            else {
+                winston.info('*************************** L013 응답에 body_list 가 없습니다. ***************************');
+            }
         }
         else {
             winston.error('************************* res 값이 없습니다. *************************');
