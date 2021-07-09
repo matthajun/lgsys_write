@@ -39,6 +39,7 @@ const HighRank = require('./service/HighRank');
 const stix_log = require('./STIX_service/stixInsert_logevent');
 const http = require('http');
 const https = require('https');
+const L009_FAIL = require('./service/L009_FAIL');
 
 //app.set('view engine', 'html');
 
@@ -105,6 +106,10 @@ app.use((err, req, res, next) => {
     res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
     res.status(err.status || 500);
     winston.error(err.stack);
+    if(err.port === 8125 && err.address === (process.env.CH_ADDRESS2).replace('http://','')){
+        winston.error('****************** 부문 시스템과의 연결이 끊겼습니다. ******************');
+        L009_FAIL.parseAndInsert(req, req.body.header.message_id);
+    }
     res.json(makejson.makeResData(err,req))
 });
 

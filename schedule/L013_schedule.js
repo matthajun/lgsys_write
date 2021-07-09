@@ -8,6 +8,7 @@ const confirmutils = require('../utils/confirmutils');
 
 const L005 = require('../service/L005');
 const L015 = require('../service/L015');
+const L005_FAIL = require('../service/L005_FAIL');
 
 async function L013_schedule(num) {
     let value = makejson.makeReqData_L013('L013');
@@ -30,13 +31,14 @@ async function L013_schedule(num) {
                 }
 
                 await CH_L005.parseAndInsert(res);
-                await CH_L005_b.parseAndInsert(res);
+                let result_sect = await CH_L005_b.parseAndInsert(res);
                 result = await L005.parseAndInsert(res);
 
                 //트랜잭션 처리
                 if (result instanceof Error) {
                     throw new result;
-                } else {
+                }
+                else {
                     const logRes = makejson.makeReqData_L015('L015', res.body.result.tid, result);
 
                     httpcall.Call('post', process.env.L015_ADDRESS, logRes, async function (err, res) {
@@ -48,12 +50,18 @@ async function L013_schedule(num) {
                         }
                     })
                 }
+                //단위-부문 트랜잭션, MYSQL 백업 테이블로
+                if (result_sect instanceof Error) {
+                    winston.error('****************** 부문 시스템과의 연결이 끊겼습니다. ******************');
+                    L005_FAIL.parseAndInsert(res);
+                }
+
             }
             else {
                 winston.info('*************************** L013 응답에 body_list 가 없습니다. ***************************');
             }
         }
-        else {
+        else { //res값이 없을때, 응답이 없을때
             winston.error('************************* res 값이 없습니다. *************************');
             if (num === 1){
                 return;

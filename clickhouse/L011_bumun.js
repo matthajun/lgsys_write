@@ -45,17 +45,8 @@ module.exports.parseAndInsert = async function(req) {
         winston.error('****************** body.list가 없습니다. ******************************')
     }
 
-    let rtnResult = {};
-    try {
-            winston.info("******************* CH query start *************************");
-            for (const query of queries) {
-                const r = await clickhouse.query(query).toPromise();
-            }
-            winston.info("******************* CH query end *************************");
-    } catch (error) {
-        winston.error(error.stack);
-        rtnResult = error;
-    } finally {
-        return rtnResult;
+    for (query of queries) {
+        let rslt = await clickhouse.query(query).toPromise();
+        winston.info(query);
     }
 };

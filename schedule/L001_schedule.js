@@ -31,6 +31,7 @@ async function L001_schedule(num) {
                 if (k >= 2) {
                     for (let index = 2; index <= k; index++) {
                         value.body.page = index;
+                        winston.info(index + ' 번 시도 *************************');
 
                         httpcall.Call('get', process.env.L001_ADDRESS, value, async function (err, res) {
                             if (res) {
@@ -51,7 +52,7 @@ async function L001_schedule(num) {
                                 winston.error('************************* index: ' + index + '번 실패 *************************');
                             }
                         });
-                        await timer(2000);
+                        await timer(500);
                     }
                 }
             }
