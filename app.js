@@ -119,7 +119,7 @@ L001.scheduleInsert();
 L002.scheduleInsert();
 L003.scheduleInsert();
 L004.scheduleInsert();
-//L005.scheduleInsert(); //L013요청으로 대체
+L005.scheduleInsert(); //L013요청으로 대체, L005로 다시 대체(210719)
 L006.scheduleInsert();
 L007.scheduleInsert();
 L008.scheduleInsert();
@@ -127,7 +127,7 @@ L008.scheduleInsert();
 L010.scheduleInsert();
 
 //L012.scheduleInsert();
-L013.scheduleInsert();
+//L013.scheduleInsert();  //L005요청으로 대체
 L014.scheduleInsert();
 
 L018.scheduleInsert();

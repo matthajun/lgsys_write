@@ -69,8 +69,8 @@ module.exports.makeReqData_L004 = function (plant_id, device_id, level_low, leve
 module.exports.makeReqData_L005 = function (id, page){
     let reqData = {};
 
-    const before_time = setDateTime.setDateTime_ago(1);
-    const long_before_time = setDateTime.setDateTime_ago(2);
+    const before_time = setDateTime.setDateTime_ago(3);
+    const long_before_time = setDateTime.setDateTime_ago(4);
     const reqHeaderData = {"message_id": id, "logger_id": ''};
     const reqBody = {"stat_start_time": long_before_time, "stat_end_time": before_time, 'page': page};
 
