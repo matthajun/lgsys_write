@@ -19,7 +19,7 @@ module.exports.makeReqData_L001 = function (id, page){
     const before_time = setDateTime.setDateTime_ago(5);
     const long_before_time = setDateTime.setDateTime_ago(10);
     const reqHeaderData = {"message_id": id, "logger_id": ''};
-    const reqBody = {"loged_start_time": long_before_time, "loged_end_time": before_time, 'page': page};
+    const reqBody = {"loaded_start_time": long_before_time, "loaded_end_time": before_time, 'page': page};
 
     reqData.header = reqHeaderData;
     reqData.body = reqBody;
