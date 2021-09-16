@@ -41,6 +41,8 @@ const http = require('http');
 const https = require('https');
 const L009_FAIL = require('./service/L009_FAIL');
 
+const L005_transation = require('./schedule/L005_Transaction_schedule');
+
 //app.set('view engine', 'html');
 
 sequelize.sync({ force: false })
@@ -135,4 +137,6 @@ L019.scheduleInsert();
 
 HighRank.searchAndtransm();
 
-stix_log.searchAndInsert();
+//stix_log.searchAndInsert(); //부문 STIX-maker로 대체
+
+//L005_transation.scheduleInsert(); //8월22일 개발, L005트랜잭션

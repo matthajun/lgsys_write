@@ -42,17 +42,18 @@ module.exports.parseAndInsert = async function(req) {
         }
     }
     else{
-        winston.error('****************** body.list가 없습니다. ******************************')
+        //winston.error('****************** body.list가 없습니다. ******************************')
     }
 
     let rtnResult = {};
     try {
+        if(queries.length) {
             winston.info("******************* CH query start *************************");
             for (const query of queries) {
                 const r = await clickhouse.query(query).toPromise();
             }
             winston.info("******************* CH query end *************************");
-
+        }
     } catch (error) {
         winston.error(error.stack);
         rtnResult = error;

@@ -59,7 +59,12 @@ exports.Rest = function (method, url, headers, query, callback) {
             } else {
                 if (url.indexOf("/restart?t=5") > 0 && url.indexOf(global.systemServiceUrl) === 0) {
                     if (response.statusCode === 204) {
-                        winston.debug("POST RESPONSE : ", body);
+                        if(url.indexOf('8800') !== -1) {
+                            winston.debug("POST RESPONSE : 부문위협 시스템 정상 응답 확인.", body);
+                        }
+                        else{
+                            winston.debug("POST RESPONSE : ", body);
+                        }
                         return callback(null, body);
                     } else {
                         winston.error("POST RESPONSE : ", response.statusCode, body);
@@ -67,7 +72,12 @@ exports.Rest = function (method, url, headers, query, callback) {
                     }
                 } else {
                     if (response.statusCode >= 200 && response.statusCode < 300) {
-                        winston.debug("POST RESPONSE : ", body);
+                        if(url.indexOf('8800') !== -1) {
+                            winston.debug("POST RESPONSE : 부문위협 시스템 정상 응답 확인.", body);
+                        }
+                        else{
+                            winston.debug("POST RESPONSE : ", body);
+                        }
                         return callback(null, body);
                     } else {
                         winston.error("POST RESPONSE : ", response.statusCode, body);
@@ -79,7 +89,6 @@ exports.Rest = function (method, url, headers, query, callback) {
         });
     }
 };
-
 
 exports.Call = function (method, url, query, callback) {
     //winston.debug("method / url : " + method + " / " + url);

@@ -170,6 +170,20 @@ module.exports.makeReqData_L015 = function (id, tid, seq_array){
     return reqData;
 };
 
+module.exports.makeReqData_L005_retry = function (id, data){
+    let reqData = {};
+
+    const before_time = data.stat_end_time;
+    const long_before_time = data.stat_start_time;
+    const page = data.page;
+    const reqHeaderData = {"message_id": id, "logger_id": ''};
+    const reqBody = {"stat_start_time": long_before_time, "stat_end_time": before_time, 'page': page};
+
+    reqData.header = reqHeaderData;
+    reqData.body = reqBody;
+    return reqData;
+};
+
 module.exports.makeResData = function (err, req){
     let resData={};
     let resBody={};

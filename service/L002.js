@@ -34,16 +34,17 @@ module.exports.parseAndInsert = async function(req){
                         for(let rowData of value){
                             for(const[k2,v2] of Object.entries(v)){
                                 if(Array.isArray(v2)){
-                                    rowData[k2] = v2.toString();
+                                    rowData[k2] = JSON.stringify(v2);
                                 }
                             }
                         }
 
-                        childTableInfos.push({...v, desc:k, ...rowData, ...req.header, ...req.body.result, ...req.body, date_time: time});
+                        childTableInfos.push({...v, desc:k, ...rowData, ...req.header, ...req.body, date_time: time});
                     }
                 }
                 tableInfos.push({tableName ,tableData:childTableInfos});
             }
+
         }
     }
 

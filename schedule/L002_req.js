@@ -12,6 +12,7 @@ async function L002_schedule(num) {
 
     httpcall.Call('get', process.env.L002_ADDRESS, value,  async function (err, res) {
         if(res) {
+            //console.log(JSON.stringify(res.body.list));
             const resData = res;
             const resConfirmCode = resData.body.result.checksum;
             if (resConfirmCode) {

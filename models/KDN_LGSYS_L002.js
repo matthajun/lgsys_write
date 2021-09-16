@@ -32,16 +32,24 @@ module.exports = class KDN_LGSYS_L002 extends Sequelize.Model {
                 type: Sequelize.STRING(20),
                 allowNull: true,
             },
-            used: {
-                type: Sequelize.STRING(10),
-                allowNull: true,
-            },
             label: {
                 type: Sequelize.STRING(30),
                 allowNull: true,
             },
-            keyword: {
-                type: Sequelize.STRING(50),
+            keywords: {
+                type: Sequelize.TEXT,
+                allowNull: true,
+            },
+            used: {
+                type: Sequelize.STRING(10),
+                allowNull: true,
+            },
+            analyze: {
+                type: Sequelize.STRING(10),
+                allowNull: true,
+            },
+            seq: {
+                type: Sequelize.STRING(10),
                 allowNull: true,
             },
             sent_time: {

@@ -41,7 +41,7 @@ module.exports.parseAndInsert = async function(req) {
                 + '\',\'' + `${value.type01}` + '\',\'' + `${value.type02}` + '\',\'' + `${value.type03}` + '\',\'' + `${value.code01}` + '\',\'' + `${value.code02}`
                 + '\',\'' + `${value.code03}` + '\',\'' + `${value.value01}` + '\',\'' + `${value.value02}` + '\',\'' + `${value.value03}`
                 + '\',\'' + `${value.value04}` + '\',\'' + `${value.value05}` + '\',\'' + `${value.value06}` + '\',\'' + `${value.value07}`
-                + '\',\'' + JSON.stringify(value.event_info) + '\',\'' + `${value.stat_time}` + '\',\'' + `${value.sent_time}` + '\',\'' + `${value.date_time}`;
+                + '\',\'' + JSON.stringify(value.event_info) + '\',\'' + `${value.stat_time}` + '\',\'' + `${value.sent_time}` + '\',\'' + '';
 
             const query = `insert into dti.${tableName} VALUES (\'${contents}\')`;
             queries.push(query);
@@ -53,7 +53,6 @@ module.exports.parseAndInsert = async function(req) {
 
     let rtnResult = {};
     try {
-            winston.info("******************* CH query start *************************");
             for (const query of queries) {
                 const r = await clickhouse.query(query).toPromise();
             }

@@ -29,7 +29,7 @@ module.exports.searchAndtransm = async function() {
                     let tableInfo = {};
 
                     let rslt = await db[tableName.toUpperCase()].findAll({where: {trans_tag: 'C'}}).then(users => {
-                        if (users) {
+                        if (users.length) {
                             let childTable = [];
                             for (user of users) {
                                 user.update({trans_tag: 'E'});
