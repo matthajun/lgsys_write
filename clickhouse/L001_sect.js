@@ -3,7 +3,7 @@ const setDateTime = require('../utils/setDateTime');
 
 const {ClickHouse} = require('clickhouse');
 const clickhouse = new ClickHouse({
-    host: process.env.CH_ADDRESS,
+    host: process.env.CH_ADDRESS2,
     port: 8125,
     debug: false,
     basicAuth: null,
