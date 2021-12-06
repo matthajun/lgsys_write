@@ -40,16 +40,6 @@ module.exports.scheduleInsert = () => {
                                         if (result instanceof Error) {
                                             throw new Error(result);
                                         }
-                                        else {
-                                            /*
-                                            httpcall.Call('post', 'https://192.168.0.44:3004/api/MotieAssets/syncAssetAnomalyLogSystem?access_token=cugURyavlO72q1BdmGzKXn9rktQnnCPk6EQeGsTY63ctHfnxQgglUa7s4aD1oM3C',
-                                                null, async function (err, res) {
-                                                    winston.info('***************************** 자산 루프백 배치 호출! *****************************');
-                                                    if(err) {
-                                                    winston.info('***************************** 자산 루프백 배치 실행 에러 발생! ****************************')
-                                                }
-                                            })*/
-                                        }
                                     }
                                 }
                                 else{

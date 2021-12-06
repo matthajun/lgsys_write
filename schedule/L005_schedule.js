@@ -36,7 +36,7 @@ async function L005_schedule(num) {
                 }
 
                 result = await CH_L005.parseAndInsert(res);
-                result_sect = await CH_L005_b.parseAndInsert(res);
+                //result_sect = await CH_L005_b.parseAndInsert(res); //부문전송금지(11.02)
 
                 //단위 - 로그 트랜잭션, 실패 시 "이력테이블"에 실패이력 저장
                 if (result instanceof Error) {
@@ -70,7 +70,7 @@ async function L005_schedule(num) {
                                     }
                                 }
                                 result = await CH_L005.parseAndInsert(res);
-                                result_sect = await CH_L005_b.parseAndInsert(res);
+                                //result_sect = await CH_L005_b.parseAndInsert(res); //부문전송금지(11.02)
 
                                 //단위 - 로그 트랜잭션, 실패 시 "이력테이블"에 실패이력 저장
                                 if (result instanceof Error) {

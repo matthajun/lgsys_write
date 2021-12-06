@@ -33,7 +33,7 @@ module.exports.scheduleInsert = () => {
                                 }
                                 else if (data.state === 'U') {
                                     let tableInfo = {tableName: 'motie_signature', tableData: data};
-                                    makereq.highrankPush(tableInfo);
+                                    //makereq.highrankPush(tableInfo);  //부문전송금지(11.02)
 
                                     let child_data = {who: data.sanGubun, column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 10 };
                                     signature_array.push(child_data);
@@ -48,7 +48,7 @@ module.exports.scheduleInsert = () => {
                                     }
                                     else {
                                         let tableInfo = {tableName: 'motie_signature', tableData: data};
-                                        makereq.highrankPush(tableInfo);
+                                        //makereq.highrankPush(tableInfo);  //부문전송금지(11.02)
                                     }
 
                                     let child_data = {who: data.sanGubun, column: data.column.toLowerCase(), keyword: data.keyword, description: data.description, status: data.deploy, deleted: 20 };

@@ -66,12 +66,12 @@ exports.scheduleInsert = () => {
                             if (user.state_level === 'U') {
                                 winston.debug('*************** L004 업데이트 전송 ***************');
                                 let tableInfo = {tableName: 'motie_log_system', tableData: user};
-                                makereq.highrankPush(tableInfo);
+                                //makereq.highrankPush(tableInfo);  //부문전송금지(11.02)
                             }
                             if (user.state_level === 'C') {
                                 winston.debug('*************** L004 생성완료 전송 ***************');
                                 let tableInfo = {tableName: 'motie_log_system', tableData: user};
-                                makereq.highrankPush(tableInfo);
+                                //makereq.highrankPush(tableInfo);  //부문전송금지(11.02)
                             }
                         },200)
                     }

@@ -17,7 +17,6 @@ exports.scheduleInsert = () => {
         try {
             const result = await db.sequelize.transaction(async (t) => {
                 let tableName = process.env.DATA_REQUEST_TABLE;
-
                 let rslt = await db.sequelize.query(
                     'SELECT distinct dti.motie_data_request.id, type, gubun, dti.motie_data_request.powerGenId, dti.motie_data_request.unitId, ' +
                     'dti.motie_data_request.makeId, dti.motie_asset_ip.deviceId, startTime, endTime, dti.motie_data_request.state, ' +
@@ -128,7 +127,7 @@ exports.scheduleInsert = () => {
                                 winston.debug('*************** L007 부문으로 전송 ***************');
                                 winston.debug(JSON.stringify(user));
                                 let tableInfo = {tableName: tableName, tableData: user};
-                                makereq.highrankPush(tableInfo);
+                                //makereq.highrankPush(tableInfo);  //부문전송금지(11.02)
                             },500)
                         }
                     }

@@ -35,7 +35,7 @@ async function L001_schedule(num) {
                 winston.info('1' + ' 번 시도 *************************');
 
                 result_ch = await L001_ch.parseAndInsert(res, 1);
-                //await L001_ch_sect.parseAndInsert(res, 1);
+                //await L001_ch_sect.parseAndInsert(res, 1);  //부문전송금지(11.02)
                 if (result_ch instanceof Error) {
                     winston.error('******************* index: ' + index + '번 실패 *******************');
                     throw new Error(result_ch);
@@ -64,7 +64,7 @@ async function L001_schedule(num) {
                                 }
 
                                 result_ch = await L001_ch.parseAndInsert(res, index);
-                                //await L001_ch_sect.parseAndInsert(res, index);
+                                //await L001_ch_sect.parseAndInsert(res, index);  //부문전송금지(11.02)
                                 if (result_ch instanceof Error) {
                                     winston.error('******************* index: ' + index + '번 실패 *******************');
                                     throw new Error(result_ch);
