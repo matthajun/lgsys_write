@@ -43,6 +43,8 @@ const L009_FAIL = require('./service/L009_FAIL');
 
 const L005_transation = require('./schedule/L005_Transaction_schedule');
 
+const Delete_schedule = require('./schedule/Delete_schedule');
+
 //app.set('view engine', 'html');
 
 sequelize.sync({ force: false })
@@ -118,10 +120,10 @@ app.use((err, req, res, next) => {
 app.set('etag', false);
 
 L001.scheduleInsert();
-L002.scheduleInsert();
+//L002.scheduleInsert();
 L003.scheduleInsert();
 L004.scheduleInsert();
-L005.scheduleInsert(); //L013요청으로 대체, L005로 다시 대체(210719)
+L005.scheduleInsert(); //L013요청으로 대체, L005로 다시 대체(210719), 오류로그관련 수정(211206)
 L006.scheduleInsert();
 L007.scheduleInsert();
 L008.scheduleInsert();
@@ -140,3 +142,5 @@ HighRank.searchAndtransm();
 //stix_log.searchAndInsert(); //부문 STIX-maker로 대체
 
 //L005_transation.scheduleInsert(); //8월22일 개발, L005트랜잭션
+
+Delete_schedule.Delete();

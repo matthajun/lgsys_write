@@ -24,6 +24,7 @@ async function L005_schedule(num) {
             winston.info(JSON.stringify(res.body.result));
 
             if(res.body.list) {
+                //정합성 코드 확인
                 const resData = res;
                 const resConfirmCode = resData.body.result.checksum;
                 if(resConfirmCode) {
@@ -35,7 +36,7 @@ async function L005_schedule(num) {
                     }
                 }
 
-                result = await CH_L005.parseAndInsert(res);
+                result = await CH_L005.parseAndInsert(res); //삽입 로직 변경(211206)
                 //result_sect = await CH_L005_b.parseAndInsert(res); //부문전송금지(11.02)
 
                 //단위 - 로그 트랜잭션, 실패 시 "이력테이블"에 실패이력 저장
@@ -44,11 +45,12 @@ async function L005_schedule(num) {
                     await L005_his.parseAndInsert(value);
                 }
 
-                //단위-부문 트랜잭션, MYSQL 백업 테이블로
+                //단위-부문 트랜잭션, MYSQL 백업 테이블로 (부문전송 금지 211102)
+                /*
                 if (result_sect instanceof Error) {
                     winston.error('****************** 부문 시스템과의 연결이 끊겼습니다. ******************');
                     await L005_FAIL.parseAndInsert(res);
-                }
+                }*/
 
                 //2페이지 이상 처리
                 let k = res.body.result.total_page;
@@ -69,7 +71,7 @@ async function L005_schedule(num) {
                                         throw Error('************** CheckSum 값이 일치하지 않아 데이터를 저장하지 않습니다. **************');
                                     }
                                 }
-                                result = await CH_L005.parseAndInsert(res);
+                                result = await CH_L005.parseAndInsert(res); //삽입 로직 변경(211206)
                                 //result_sect = await CH_L005_b.parseAndInsert(res); //부문전송금지(11.02)
 
                                 //단위 - 로그 트랜잭션, 실패 시 "이력테이블"에 실패이력 저장
@@ -78,11 +80,12 @@ async function L005_schedule(num) {
                                     await L005_his.parseAndInsert(value);
                                 }
 
-                                //단위-부문 트랜잭션, MYSQL 백업 테이블로
+                                //단위-부문 트랜잭션, MYSQL 백업 테이블로, (부문전송 금지 211102)
+                                /*
                                 if (result_sect instanceof Error) {
                                     winston.error('****************** 부문 시스템과의 연결이 끊겼습니다. ******************');
                                     await L005_FAIL.parseAndInsert(res);
-                                }
+                                }*/
                             }
                             else {
                                 winston.error('************************* index: ' + index + '번 실패 *************************');
