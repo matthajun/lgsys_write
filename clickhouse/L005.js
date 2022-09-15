@@ -2,7 +2,9 @@ const winston = require('../config/winston')(module);
 const setDateTime = require('../utils/setDateTime');
 
 const ClickHouse = require('@apla/clickhouse');
-const ch = new ClickHouse({ host : '192.168.0.44', port: '8124', format: 'CSV'});
+
+//당진 실서버 코드 선언부
+const ch = new ClickHouse({ host : (process.env.CH_ADDRESS).replace('http://',''), port: '8124', format: 'CSV'});
 
 const tableName = process.env.CH_L005;
 const fs = require('fs');
