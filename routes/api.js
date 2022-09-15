@@ -25,13 +25,13 @@ router.post('/v1', async (req, res, next) => {
 
             switch (codeId) {
                 case "L009" :
-                    result = await L009.parseAndInsert(req);
+                    // result = await L009.parseAndInsert(req);
                     ch_result = await L009_ch.parseAndInsert(req);
                     //ch_bu_result = await L009_ch_bu.parseAndInsert(req); //부문전송금지(11.02)
                     break;
 
                 case "L011" :
-                    result = await L009.parseAndInsert(req);
+                    // result = await L009.parseAndInsert(req);
                     ch_result = await L011_ch.parseAndInsert(req);
                     //ch_bu_result = await L011_ch_bu.parseAndInsert(req); //부문전송금지(11.02)
                     break;
