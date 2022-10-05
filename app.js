@@ -49,7 +49,7 @@ const Delete_schedule = require('./schedule/Delete_schedule');
 
 sequelize.sync({ force: false })
     .then(() => {
-        winston.info('success db connect ');
+        winston.info('success db connect  (version. 22.10.5)');
     })
     .catch((err) => {
         winston.error(err.stack);
